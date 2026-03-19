@@ -49,6 +49,46 @@ namespace IauVacanta.Backend.Controllers
             return CreatedAtAction(nameof(GetPlaces), new { id = place.Id }, place);
         }
 
+        [Authorize]
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<PlaceDto>> UpdatePlace(int id, CreatePlaceRequestDto placeDto)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr))
+            {
+                return Unauthorized();
+            }
+
+            var isAdmin = bool.TryParse(User.FindFirstValue("IsAdmin"), out var parsedIsAdmin) && parsedIsAdmin;
+            var updated = await _placeService.Update(id, int.Parse(userIdStr), isAdmin, placeDto);
+            if (updated == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updated);
+        }
+
+        [Authorize]
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeletePlace(int id)
+        {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr))
+            {
+                return Unauthorized();
+            }
+
+            var isAdmin = bool.TryParse(User.FindFirstValue("IsAdmin"), out var parsedIsAdmin) && parsedIsAdmin;
+            var deleted = await _placeService.Delete(id, int.Parse(userIdStr), isAdmin);
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("pending")]
         public async Task<ActionResult<List<PlaceDto>>> GetPending()

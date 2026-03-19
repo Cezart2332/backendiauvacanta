@@ -28,11 +28,11 @@ namespace IauVacanta.Backend.Controllers
 
             var accessToken = await _authService.CreateToken(user);
             var refreshToken = await _authService.GenerateRefreshToken(user.Id);
+            SetAccessToken(accessToken);
             SetRefreshToken(refreshToken);
 
             return Ok(new AuthResponseDto
             {
-                AccessToken = accessToken,
                 User = _authService.MapUser(user)
             });
         }
@@ -48,11 +48,11 @@ namespace IauVacanta.Backend.Controllers
 
             var accessToken = await _authService.CreateToken(user);
             var refreshToken = await _authService.GenerateRefreshToken(user.Id);
+            SetAccessToken(accessToken);
             SetRefreshToken(refreshToken);
 
             return Ok(new AuthResponseDto
             {
-                AccessToken = accessToken,
                 User = _authService.MapUser(user)
             });
         }
@@ -75,16 +75,15 @@ namespace IauVacanta.Backend.Controllers
             await _authService.RevokeRefreshToken(refreshToken);
             var accessToken = await _authService.CreateToken(user);
             var newRefreshToken = await _authService.GenerateRefreshToken(user.Id);
+            SetAccessToken(accessToken);
             SetRefreshToken(newRefreshToken);
 
             return Ok(new AuthResponseDto
             {
-                AccessToken = accessToken,
                 User = _authService.MapUser(user)
             });
         }
 
-        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -94,8 +93,22 @@ namespace IauVacanta.Backend.Controllers
                 await _authService.RevokeRefreshToken(refreshToken);
             }
 
+            Response.Cookies.Delete("accessToken");
             Response.Cookies.Delete("refreshToken");
             return NoContent();
+        }
+
+        private void SetAccessToken(string accessToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddMinutes(15),
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                IsEssential = true
+            };
+            Response.Cookies.Append("accessToken", accessToken, cookieOptions);
         }
 
         private void SetRefreshToken(RefreshToken newRefreshToken)

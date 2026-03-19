@@ -132,3 +132,5 @@ C:\Users\Cezar\Desktop\iauvacanta\backend\IauVacanta.Backend\obj\Debug\net10.0\r
 C:\Users\Cezar\Desktop\iauvacanta\backend\IauVacanta.Backend\obj\Debug\net10.0\IauVacanta.Backend.pdb
 C:\Users\Cezar\Desktop\iauvacanta\backend\IauVacanta.Backend\obj\Debug\net10.0\IauVacanta.Backend.genruntimeconfig.cache
 C:\Users\Cezar\Desktop\iauvacanta\backend\IauVacanta.Backend\obj\Debug\net10.0\ref\IauVacanta.Backend.dll
+C:\Users\Cezar\Desktop\iauvacanta\backend\IauVacanta.Backend\bin\Debug\net10.0\DotNetEnv.dll
+C:\Users\Cezar\Desktop\iauvacanta\backend\IauVacanta.Backend\bin\Debug\net10.0\Sprache.dll

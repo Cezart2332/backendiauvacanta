@@ -160,5 +160,83 @@ namespace IauVacanta.Backend.Services
                 })
                 .ToListAsync();
         }
+
+        public async Task<PlaceDto?> Update(int placeId, int actorUserId, bool isAdmin, CreatePlaceRequestDto request)
+        {
+            var place = await _context.Places
+                .Include(p => p.Facilities)
+                .FirstOrDefaultAsync(p => p.Id == placeId);
+
+            if (place == null)
+            {
+                return null;
+            }
+
+            if (!isAdmin && place.OwnerId != actorUserId)
+            {
+                return null;
+            }
+
+            place.Title = request.Title.Trim();
+            place.Description = request.Description.Trim();
+            place.PhotoUrl = request.PhotoUrl.Trim();
+            place.Stars = request.Stars;
+            place.City = request.City.Trim();
+            place.IsApproved = false;
+
+            place.Facilities.Clear();
+
+            var facilityNames = request.Facilities
+                .Where(f => !string.IsNullOrWhiteSpace(f))
+                .Select(f => f.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var facilityName in facilityNames)
+            {
+                var lowerName = facilityName.ToLower();
+                var facility = await _context.Facilities.FirstOrDefaultAsync(f => f.Name.ToLower() == lowerName);
+                if (facility == null)
+                {
+                    facility = new Facility { Name = facilityName };
+                    _context.Facilities.Add(facility);
+                }
+
+                place.Facilities.Add(facility);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new PlaceDto
+            {
+                Id = place.Id,
+                Title = place.Title,
+                Description = place.Description,
+                PhotoUrl = place.PhotoUrl,
+                Stars = place.Stars,
+                City = place.City,
+                IsApproved = place.IsApproved,
+                OwnerId = place.OwnerId,
+                Facilities = place.Facilities.Select(f => f.Name).OrderBy(name => name).ToList()
+            };
+        }
+
+        public async Task<bool> Delete(int placeId, int actorUserId, bool isAdmin)
+        {
+            var place = await _context.Places.FirstOrDefaultAsync(p => p.Id == placeId);
+            if (place == null)
+            {
+                return false;
+            }
+
+            if (!isAdmin && place.OwnerId != actorUserId)
+            {
+                return false;
+            }
+
+            _context.Places.Remove(place);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
