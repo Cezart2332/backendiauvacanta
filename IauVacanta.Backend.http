@@ -1,0 +1,6 @@
+@IauVacanta.Backend_HostAddress = http://localhost:5079
+
+GET {{IauVacanta.Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
