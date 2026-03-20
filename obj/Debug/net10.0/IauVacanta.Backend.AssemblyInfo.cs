@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IauVacanta.Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b999b9b26da88de4321e98c98117dc763b680a45")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c46d732d03da4b22d820fc7e1558b38f3044039")]
 [assembly: System.Reflection.AssemblyProductAttribute("IauVacanta.Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IauVacanta.Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
